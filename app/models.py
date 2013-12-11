@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytz import utc
+from django.db.utils import IntegrityError
 import requests
 import datetime
 
@@ -11,9 +12,12 @@ class Wiki(models.Model):
     title = models.TextField(null=True)
     wam_score = models.FloatField(default=0)
     desc = models.TextField(null=True)
-    subdomain = models.TextField(null=True)
+    subdomain = models.TextField(unique=True)
     last_updated = models.DateTimeField(auto_now=True)
     url = models.URLField(max_length=1024, null=True)
+
+    def __unicode__(self):
+        return self.title
 
     @classmethod
     def seed_data(cls, wiki_id):
@@ -35,13 +39,15 @@ class Wiki(models.Model):
         wiki.wam_score = float(data['wam_score'])
         wiki.url = data['url']
         wiki.subdomain = wiki.url_to_subdomain(wiki.url)
-        wiki.save()
+        try:
+            wiki.save()
+        except IntegrityError:
+            return False  #screw it, we don't really use the ID after this -- just the URL
         return True
 
     @classmethod
     def url_to_subdomain(cls, url):
-        url.replace('http://', '')
-        splt = url.split('.')
+        splt = url.replace('http://', '').split('.')
         if splt[1] != 'wikia':
             return splt[1]
         return splt[0]
@@ -118,6 +124,9 @@ class Story(models.Model):
 
     class Meta:
         unique_together = ('article_id', 'wiki')
+
+    def __unicode__(self):
+        return self.title
 
 
 class UpVote(models.Model):

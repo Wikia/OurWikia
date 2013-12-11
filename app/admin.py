@@ -1,3 +1,8 @@
 from django.contrib import admin
+import models
 
-# Register your models here.
+admin.site.register(models.Wiki)
+admin.site.register(models.Story)
+admin.site.register(models.WikiaUser)
+admin.site.register(models.Comment)
+

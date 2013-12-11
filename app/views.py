@@ -9,10 +9,12 @@ def frontpage(request):
 
 def subwikia(request, subdomain):
     try:
+        print subdomain
         wiki = models.Wiki.objects.get(subdomain=subdomain)
     except ObjectDoesNotExist:
         return four_oh_four(request)
     stories = wiki.stories.get_queryset().order_by('-last_updated')
+    print wiki, stories
     return render_to_response('subwikia.html', dict(wiki=wiki, stories=stories))
 
 
@@ -29,4 +31,5 @@ def downvote(request, story_id):
 
 
 def four_oh_four(request):
+    print 'i was 404ed'
     return render_to_response('404.html')

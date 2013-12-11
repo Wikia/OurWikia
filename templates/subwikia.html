@@ -1,12 +1,14 @@
 {%  extends "layout.html" %}
 
-{% block title  %}{{ wiki.name }}{% endblock %}
+{% block title  %}{{ wiki.title }}{% endblock %}
 
 {% block header %}
 <nav>
     <img src="{{ wiki.wordmark }}" alt="" />
-    {{ wiki.name }}
+    {{ wiki.title }}
 </nav>
 {% endblock %}
 
-{% include "stories.html" %}
+{% block content  %}
+    {% include "stories.html" %}
+{% endblock %}
