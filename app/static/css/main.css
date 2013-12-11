@@ -12,9 +12,6 @@ img.avatar{
     max-width: 15px;
     margin-right: 5px;
 }
-span.edited-by{
-    margin-right: 15px;
-}
 
 .to-fp{
     font-size: 64px;
@@ -57,4 +54,8 @@ span.edited-by{
 
 .description{
     text-align: justify;
+}
+
+#our-wikia-logo-fp{
+    max-height: 100px;
 }

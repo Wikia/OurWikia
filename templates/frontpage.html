@@ -1,0 +1,31 @@
+{%  extends "layout.html" %}
+
+{% load static %}
+
+{% block title  %}{{ wiki.title }}{% endblock %}
+
+{% block header %}
+    <div class="container initial-container">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{% static "img/our_wikia.png" %}" alt="" id="our-wikia-logo-fp"/>
+            </div>
+            <div class="col-md-9">
+                <h1>{{ wiki.title }}</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content  %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                {% include "stories.html" %}
+            </div>
+            <div class="col-md-2">
+                This whole right rail is for awesome marketing copy
+            </div>
+        </div>
+    </div>
+{% endblock %}

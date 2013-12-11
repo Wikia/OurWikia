@@ -4,12 +4,11 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def frontpage(request):
-    pass
+    return render_to_response('frontpage.html', dict(stories=models.Story.ranked()[:50]))
 
 
 def subwikia(request, subdomain):
     try:
-        print subdomain
         wiki = models.Wiki.objects.get(subdomain=subdomain)
     except ObjectDoesNotExist:
         return four_oh_four(request)
@@ -30,5 +29,4 @@ def downvote(request, story_id):
 
 
 def four_oh_four(request):
-    print 'i was 404ed'
     return render_to_response('404.html')

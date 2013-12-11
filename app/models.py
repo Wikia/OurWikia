@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytz import utc
 from django.db.utils import IntegrityError
+from django.db.models import Count
+from collections import OrderedDict
 import requests
 import datetime
 
@@ -207,6 +209,23 @@ class Story(models.Model):
 
     def get_score(self):
         return int(self.upvotes.count() - self.downvotes.count())
+
+    @classmethod
+    def ranked(cls):
+        """
+        Returns a preconfigured queryset for a faux reddit ranking algo
+        Note that WAM score adds between 0 and 10 karma to a story
+        """
+        stories_qs = cls.objects.all()
+        stories_qs.aggregate(upvotes=Count('upvotes'), downvotes=Count('downvotes'))
+        stories_qs.extra(select={'karma_total': 'SUM(upvotes - downvotes) + (app_wiki.wam_score/10)',
+                                 'order': 'log(max(abs(karma_total), 1), 10)',
+                                 'seconds': '(EPOCH FROM last_updated) - 1134028003',
+                                 'sign': 'CASE WHEN karma_total > 0 THEN 1 WHEN karma_total < 0 THEN -1 ELSE 0 END',
+                                 'hotness': 'round(order + sign * seconds / 45000, 7)'
+                                 },
+                         order_by=['-hotness'])
+        return stories_qs
 
 
 class UpVote(models.Model):

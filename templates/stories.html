@@ -1,3 +1,4 @@
+{%  load humanize %}
 {% for story in stories %}
     <div class="story row">
         <div class="thumbnail-wrapper col-md-1 row">
@@ -31,12 +32,20 @@
         <div class="headline row {% if story.thumbnail %}col-md-9{% else %}col-md-11{% endif %}">
             <a href="{{ story.url }}">{{ story.title }} -- {{ story.abstract }}</a>
             <div class="metadata row">
-                <div class="col-md-6 pull-left">
-                    {% if story.last_editor %}
-                    <span class="edited-by"><small>Edited by <img class="avatar" src="{{ story.last_editor.avatar }}" alt="" /><a href="{{ story.last_editor.url }}">{{ story.last_editor.name }}</a></small></span>
-                    {% endif %}
+                <div class="col-md-8 pull-left">
+                    <small><i>
+                        Last updated {{ story.last_updated|naturaltime }}
+                        {% if story.last_editor %}
+                        <span class="edited-by">by <img class="avatar" src="{{ story.last_editor.avatar }}" alt="" />
+                            <a href="{{ story.last_editor.url }}">{{ story.last_editor.name }}</a>
+                        </span>
+                        {% endif %}
+                        {% if not wiki %}
+                        on <a href="{% url 'app.views.subwikia' story.wiki.subdomain %}">{{ story.wiki.title}}</a>
+                        {% endif %}
+                    </i></small>
                 </div>
-                <div class="col-md-6 pull-right comments-line">
+                <div class="col-md-4 pull-right comments-line">
                     <small>
                         <a href="{% url 'app.views.comments' story.wiki.subdomain story.id %}">
                         <!-- route for comments -->
