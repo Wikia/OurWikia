@@ -128,6 +128,9 @@ class Story(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_score(self):
+        return int(self.upvotes.count() - self.downvotes.count())
+
 
 class UpVote(models.Model):
     story = models.ForeignKey(Story, related_name='upvotes')

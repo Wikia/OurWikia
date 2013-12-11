@@ -22,6 +22,13 @@
 
 {% block content  %}
     <div class="container">
-        {% include "stories.html" %}
+        <div class="row">
+            <div class="col-md-10">
+                {% include "stories.html" %}
+            </div>
+            <div class="col-md-2">
+                <p>{{ wiki.desc }}</p>
+            </div>
+        </div>
     </div>
 {% endblock %}

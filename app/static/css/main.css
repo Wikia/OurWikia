@@ -10,6 +10,7 @@ img.story-thumbnail{
 img.avatar{
     max-height: 15px;
     max-width: 15px;
+    margin-right: 5px;
 }
 span.edited-by{
     margin-right: 15px;
@@ -17,4 +18,39 @@ span.edited-by{
 
 .to-fp{
     font-size: 64px;
+}
+
+.ow-fixed-thumbnail{
+    height: 120px;
+    width: 120px;
+    text-align: center;
+}
+
+.ow-fixed-thumbnail img{
+    margin: auto;
+}
+
+#content{
+    margin-top: 15px;
+}
+
+.comments-line{
+    text-align: right;
+}
+
+.voters div{
+    text-align: center;
+}
+
+.upvote, .downvote{
+    font-size: 20px;
+}
+
+.score-number{
+    font-weight: bold;
+    color: #aaaaaa;
+}
+
+.story{
+    height: 120px;
 }
