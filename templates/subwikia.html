@@ -1,20 +1,28 @@
 {%  extends "layout.html" %}
 
+{% load static %}
+
 {% block title  %}{{ wiki.title }}{% endblock %}
 
 {% block header %}
     <div class="container initial-container">
         <div class="row">
             <div class="col-md-3">
-                <img src="{{ wiki.wordmark }}" alt="" />
+                <div class="logo-wrapper">
+                    <img src="{{ wiki.wordmark }}" alt="" />
+                </div>
             </div>
             <div class="col-md-6">
-                <h1>{{ wiki.title }}</h1>
+                <div class="header-col">
+                    <h1>{{ wiki.title }}</h1>
+                </div>
             </div>
-            <div class="col-md-1 col-md-offset-2">
-                <a href="/">
-                    <span class="glyphicon glyphicon-home to-fp"></span>
-                </a>
+            <div class="col-md-3">
+                <div class="logo-wrapper">
+                    <a href="/">
+                        <img src="{% static "img/our_wikia.png" %}" alt="" id="our-wikia-logo-sw"/>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

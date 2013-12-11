@@ -59,3 +59,18 @@ img.avatar{
 #our-wikia-logo-fp{
     max-height: 100px;
 }
+
+.logo-wrapper, .header-col{
+    display: table-cell;
+    height: 100px;
+    vertical-align: middle;
+}
+
+.logo-wrapper img{
+    max-height: 100px;
+}
+
+#our-wikia-logo-sw{
+    max-height: 100px;
+    max-width: 260px;
+}
