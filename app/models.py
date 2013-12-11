@@ -50,7 +50,7 @@ class Wiki(models.Model):
         try:
             user = WikiaUser.objects.get(id=user_id)
         except ObjectDoesNotExist:
-            response = requests.get(self.url+'/api/v1/User/Details', {'ids': user_id})
+            response = requests.get(self.url+'/api/v1/User/Details', params={'ids': user_id})
             if response.status_code is not 200:
                 return None
             user = WikiaUser()
@@ -62,38 +62,41 @@ class Wiki(models.Model):
             user.name = data['name']
             user.url = data['url']
             user.avatar = data['avatar']
+            user.save()
         return user
 
     def seed_stories(self):
         activity_params = {'limit': 50, 'namespaces': '0', 'allowDuplicates': 'false'}
-        activity_response = requests.get(self.url+'/Activity/getLatestActivity', params=activity_params)
+        activity_response = requests.get(self.url+'/api/v1/Activity/LatestActivity', params=activity_params)
         if activity_response.status_code is not 200:
+            print activity_response.content
             return False
-        activity_items = activity_response['items']
+        activity_items = activity_response.json()['items']
         if len(activity_items) == 0:
             return False
         detail_params = {'ids': ','.join([str(item['article']) for item in activity_items]),
                          'abstract': 120, 'width': 200, 'height': 200}
-        detail_response = requests.get(self.url+'/Activity/getLatestActivity', params=detail_params)
+        detail_response = requests.get(self.url+'/api/v1/Articles/Details', params=detail_params)
         if detail_response.status_code is not 200:
             return False
-        detail_items = detail_response.json()
-        map(self._story_from_detail, detail_items)
+        detail_items = detail_response.json()['items']
+        map(self._story_from_detail, detail_items.values())
         return True
 
     def _story_from_detail(self, detail):
         try:
-            story = Story.objects.get(article_id=detail['id'])
+            story = Story.objects.get(article_id=int(detail['id']))
         except ObjectDoesNotExist:
             story = Story()
-            story.article_id = detail['id']
+            story.article_id = int(detail['id'])
         story.title = detail['title']
         story.url = detail['url']
         story.wiki = self
         story.abstract = detail['abstract']
         story.last_editor = self.get_wikia_user(detail['revision']['user_id'])
         story.last_updated = datetime.datetime.fromtimestamp(int(detail['revision']['timestamp']), tz=utc)
-        story.thumbnail = detail['thubmnail']
+        story.thumbnail = detail['thumbnail']
+        story.save()
 
 
 class WikiaUser(models.Model):
@@ -110,7 +113,7 @@ class Story(models.Model):
     abstract = models.TextField(null=True)
     total_upvotes = models.IntegerField(default=0)
     total_downvotes = models.IntegerField(default=0)
-    last_editor = models.ForeignKey(WikiaUser, related_name='edits')
+    last_editor = models.ForeignKey(WikiaUser, related_name='edits', null=True)
     last_updated = models.DateTimeField()
 
     class Meta:
