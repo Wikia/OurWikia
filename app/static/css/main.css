@@ -1,0 +1,20 @@
+.initial-container{
+    margin-top: 15px;
+}
+
+img.story-thumbnail{
+    max-height: 100px;
+    max-width: 100px;
+}
+
+img.avatar{
+    max-height: 15px;
+    max-width: 15px;
+}
+span.edited-by{
+    margin-right: 15px;
+}
+
+.to-fp{
+    font-size: 64px;
+}

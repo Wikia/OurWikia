@@ -3,12 +3,25 @@
 {% block title  %}{{ wiki.title }}{% endblock %}
 
 {% block header %}
-<nav>
-    <img src="{{ wiki.wordmark }}" alt="" />
-    {{ wiki.title }}
-</nav>
+    <div class="container initial-container">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{{ wiki.wordmark }}" alt="" />
+            </div>
+            <div class="col-md-6">
+                <h1>{{ wiki.title }}</h1>
+            </div>
+            <div class="col-md-1 col-md-offset-2">
+                <a href="/">
+                    <span class="glyphicon glyphicon-home to-fp"></span>
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content  %}
-    {% include "stories.html" %}
+    <div class="container">
+        {% include "stories.html" %}
+    </div>
 {% endblock %}

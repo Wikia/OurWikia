@@ -11,18 +11,23 @@
         <div class="headline">
             {% if story.thumbnail %}
                 <a href="{{ story.url }}">
-                    <img src="{{ story.thumbnail }}" alt=""/>
+                    <img class="story-thumbnail" src="{{ story.thumbnail }}" alt=""/>
                 </a>
             {% endif %}
             <a href="{{ story.url }}">{{ story.title }} -- {{ story.abstract }}</a>
         </div>
         <div class="metadata">
             {% if story.last_editor %}
-            <small>Edited by <img src="{{ story.last_editor.avatar }}" alt="" /><a href="{{ story.last_editor.url }}">{{ story.last_editor.name }}</a></small>
+            <span class="edited-by"><small>Edited by <img class="avatar" src="{{ story.last_editor.avatar }}" alt="" /><a href="{{ story.last_editor.url }}">{{ story.last_editor.name }}</a></small></span>
             {% endif %}
+
             <a href="#">
             <!-- route for comments -->
-                {{ story.comments.count }} comments
+                {% if story.comments %}
+                {{ story.comments }} comments
+                {% else %}
+                0 comments
+                {% endif %}
             </a>
         </div>
     </div>
