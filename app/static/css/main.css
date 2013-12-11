@@ -54,3 +54,7 @@ span.edited-by{
 .story{
     height: 120px;
 }
+
+.description{
+    text-align: justify;
+}

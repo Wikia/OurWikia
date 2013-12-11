@@ -1,6 +1,6 @@
 {% for story in stories %}
     <div class="story row">
-        <div class="thumbnail-wrapper col-md-3 row">
+        <div class="thumbnail-wrapper col-md-1 row">
             <div class="voters col-md-4 row">
                 <div class="row">
                     <a href="#" data-id="{{ story.id }}" class="upvote">
@@ -18,15 +18,17 @@
                     </a>
                 </div>
             </div>
-            {% if story.thumbnail %}
+        </div>
+        {% if story.thumbnail %}
+        <div class="thumbnail-wrapper col-md-2">
             <div class="ow-fixed-thumbnail col-md-8">
                 <a href="{{ story.url }}" >
                     <img class="story-thumbnail img-rounded" src="{{ story.thumbnail }}" alt=""/>
                 </a>
             </div>
-            {% endif %}
         </div>
-        <div class="headline row col-md-9">
+        {% endif %}
+        <div class="headline row {% if story.thumbnail %}col-md-9{% else %}col-md-11{% endif %}">
             <a href="{{ story.url }}">{{ story.title }} -- {{ story.abstract }}</a>
             <div class="metadata row">
                 <div class="col-md-6 pull-left">
@@ -44,6 +46,8 @@
                             0 comments
                             {% endif %}
                         </a>
+                        |
+                        <a href="#">share</a>
                     </small>
                 </div>
             </div>

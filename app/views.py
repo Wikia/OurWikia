@@ -14,7 +14,6 @@ def subwikia(request, subdomain):
     except ObjectDoesNotExist:
         return four_oh_four(request)
     stories = wiki.stories.get_queryset().order_by('-last_updated')
-    print wiki, stories
     return render_to_response('subwikia.html', dict(wiki=wiki, stories=stories))
 
 

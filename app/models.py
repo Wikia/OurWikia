@@ -15,6 +15,12 @@ class Wiki(models.Model):
     subdomain = models.TextField(unique=True)
     last_updated = models.DateTimeField(auto_now=True)
     url = models.URLField(max_length=1024, null=True)
+    headline = models.TextField(null=True)
+    edits = models.IntegerField(null=True)
+    articles = models.IntegerField(null=True)
+    pages = models.IntegerField(null=True)
+    users = models.IntegerField(null=True)
+    active_users = models.IntegerField(null=True)
 
     def __unicode__(self):
         return self.title
@@ -33,17 +39,43 @@ class Wiki(models.Model):
         if len(resp['items']) == 0:
             return False
         data = resp['items'][str(wiki_id)]
+        subdomain = wiki.url_to_subdomain(data['url'])
+        if subdomain.startswith('qatestwiki'):
+            if wiki.id is not None:
+                wiki.delete()
+            return False
         wiki.title = data['title']
         wiki.desc = data['desc']
         wiki.wordmark = data['wordmark']
         wiki.wam_score = float(data['wam_score'])
         wiki.url = data['url']
-        wiki.subdomain = wiki.url_to_subdomain(wiki.url)
+        wiki.subdomain = subdomain
+        wiki.headline = data.get('headline')
+        stats = data.get('stats', {})
+        wiki.edits = stats.get('edits')
+        wiki.articles = stats.get('articles')
+        wiki.pages = stats.get('pages')
+        wiki.users = stats.get('users')
+        wiki.active_users = stats.get('activeUsers')
+        top_user_ids = data.get('topUsers', [])
         try:
             wiki.save()
         except IntegrityError:
             return False  #screw it, we don't really use the ID after this -- just the URL
+        if len(top_user_ids):
+            map(lambda x: x.delete(), wiki.top_users.all())
+            posish = 1
+            for wikia_user in filter(lambda x: x, wiki.get_wikia_users([int(uid) for uid in top_user_ids])):
+                top = TopWikiaUsers()
+                top.wiki = wiki
+                top.position = posish
+                top.wikia_user = wikia_user
+                top.save()
+                posish += 1
         return True
+
+    def get_top_users(self):
+        return [tu.wikia_user for tu in self.top_users.get_queryset().order_by('position')]
 
     @classmethod
     def url_to_subdomain(cls, url):
@@ -54,22 +86,53 @@ class Wiki(models.Model):
 
     def get_wikia_user(self, user_id):
         try:
-            user = WikiaUser.objects.get(id=user_id)
+            user = WikiaUser.objects.get(wikia_user_id=user_id, wiki=self)
         except ObjectDoesNotExist:
             response = requests.get(self.url+'/api/v1/User/Details', params={'ids': user_id})
             if response.status_code is not 200:
                 return None
-            user = WikiaUser()
-            user.id = user_id
             items = response.json()['items']
+            data = items[0]
             if len(items) == 0:
                 return None
-            data = items[0]
+            user = WikiaUser()
+            user.wikia_user_id = user_id
             user.name = data['name']
             user.url = data['url']
             user.avatar = data['avatar']
+            user.wiki = self
             user.save()
         return user
+
+    def get_wikia_users(self, user_ids):
+        users = []
+        missing_ids = []
+        for user_id in user_ids:
+            try:
+                users += [WikiaUser.objects.get(wikia_user_id=user_id, wiki=self)]
+            except ObjectDoesNotExist:
+                missing_ids += [user_id]
+        if len(missing_ids) > 0:
+            response = requests.get(self.url+'/api/v1/User/Details',
+                                    params={'ids': ','.join([str(uid) for uid in missing_ids])})
+            if response.status_code is not 200:
+                return users
+            try:
+                items = response.json()['items']
+            except ValueError:
+                return users
+            if len(items) == 0:
+                return users
+            for data in items:
+                user = WikiaUser()
+                user.wikia_user_id = int(data['user_id'])
+                user.name = data['name']
+                user.url = data['url']
+                user.avatar = data['avatar']
+                user.wiki = self
+                user.save()
+                users += [user]
+        return users
 
     def seed_stories(self):
         activity_params = {'limit': 50, 'namespaces': '0', 'allowDuplicates': 'false'}
@@ -109,6 +172,20 @@ class WikiaUser(models.Model):
     name = models.TextField()
     url = models.TextField()
     avatar = models.URLField(max_length=1024)
+    wikia_user_id = models.IntegerField(null=True)
+    wiki = models.ForeignKey(Wiki, related_name='wikia_users')
+
+    class Meta:
+        unique_together = ('wikia_user_id', 'wiki')
+
+
+class TopWikiaUsers(models.Model):
+    position = models.IntegerField()
+    wikia_user = models.ForeignKey(WikiaUser)
+    wiki = models.ForeignKey(Wiki, related_name='top_users')
+
+    class Meta:
+        unique_together = ('position', 'wikia_user', 'wiki')
 
 
 class Story(models.Model):

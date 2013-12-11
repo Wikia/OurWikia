@@ -27,7 +27,38 @@
                 {% include "stories.html" %}
             </div>
             <div class="col-md-2">
-                <p>{{ wiki.desc }}</p>
+                {%  if wiki.headline %}
+                <h3>{{ wiki.headline }}</h3>
+                {% endif %}
+                <p class="description">{{ wiki.desc }}</p>
+                <h4>{{ wiki.title }} Stats</h4>
+                <ul class="list-group">
+                    {% if wiki.edits %}
+                    <li class="list-group-item">{{ wiki.edits }} edits</li>
+                    {% endif %}
+                    {% if wiki.articles %}
+                    <li class="list-group-item">{{ wiki.articles }} articles</li>
+                    {% endif %}
+                    {% if wiki.pages%}
+                    <li class="list-group-item">{{ wiki.pages }} pages</li>
+                    {% endif %}
+                    {% if wiki.edits %}
+                    <li class="list-group-item">{{ wiki.users}} users</li>
+                    {% endif %}
+                    {% if wiki.active_users %}
+                    <li class="list-group-item">{{ wiki.active_users }} active users</li>
+                    {% endif %}
+                </ul>
+                {% if wiki.top_users.count %}
+                <h4>Top Users</h4>
+                <ul class="list-group">
+                {% for user in wiki.get_top_users %}
+                    <li class="list-group-item"><a href="{{ user.url }}">
+                        <img src="{{ user.avatar }}" class="avatar" alt=""/> {{ user.name }}
+                    </a></li>
+                {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
     </div>
