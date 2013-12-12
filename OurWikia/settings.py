@@ -100,7 +100,12 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
-TEMPLATE_DIRS = ( 'templates', REGISTRATION_TEMPLATE_DIR )
+TEMPLATE_DIRS = ('templates', REGISTRATION_TEMPLATE_DIR)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    'django.core.context_processors.request',
+)
 
 # Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

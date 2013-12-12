@@ -1,0 +1,13 @@
+<div id="user-stuff">
+    {% if request.user.is_authenticated %}
+    <div><small>Welcome back, {{ request.user}}</small></div>
+    <div><button type="button" data-toggle="modal" data-remote="/accounts/logout/" data-target="#myModal">Log Out</button></div>
+    {% else %}
+    <button type="button" data-toggle="modal" data-remote="/accounts/login/" data-target="#myModal">Login</button>
+    <button type="button" data-toggle="modal" data-remote="/accounts/register/" data-target="#myModal">Signup</button>
+    {% endif %}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    </div>
+</div>
