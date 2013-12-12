@@ -2,11 +2,14 @@ import models
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import RequestContext
+from django.db.models import Max
 
 
 def frontpage(request):
+    stories = [wiki_hotness.story for wiki_hotness in models.WikiHotness.objects.order_by('-hotness')[:50]]
+
     return render_to_response('frontpage.html',
-                              dict(stories=models.Story.ranked()[:50]),
+                              dict(stories=stories[:50]),
                               context_instance=RequestContext(request))
 
 
