@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+from registration_defaults.settings import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -46,6 +48,8 @@ INSTALLED_APPS = (
     'django_extensions',
     'redis_cache'
 )
+
+ACCOUNT_ACTIVATION_DAYS = 7 #
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -88,6 +92,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -95,4 +100,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
-TEMPLATE_DIRS = ( 'templates' )
+TEMPLATE_DIRS = ( 'templates', REGISTRATION_TEMPLATE_DIR )
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ourwikiaapp@gmail.com'
+EMAIL_HOST_PASSWORD = 'our_wikia_app'
+EMAIL_USE_TLS = True;
