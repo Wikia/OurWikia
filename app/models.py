@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from pytz import utc
 from django.db.utils import IntegrityError
-from django.db.models import Count
-from collections import OrderedDict
+import math
+import time
 import requests
 import datetime
 
@@ -169,6 +169,27 @@ class Wiki(models.Model):
         story.thumbnail = detail['thumbnail']
         story.save()
 
+    def update_hotness(self):
+        hottest_story = self.stories.order_by('-hotness').first()
+        if not hottest_story:
+            self.hotness_updated = True
+            return
+        try:
+            hotness = WikiHotness.objects.get(wiki=self)
+        except ObjectDoesNotExist:
+            hotness = WikiHotness()
+            hotness.wiki = self
+
+        hotness.story = hottest_story
+        hotness.hotness = hottest_story.hotness
+        hotness.save()
+        self.hotness_updated = True
+
+    def save(self, *args, **kwargs):
+        if not hasattr(self, 'hotness_updated'):
+            self.update_hotness()
+        super(Wiki, self).save()
+
 
 class WikiaUser(models.Model):
     name = models.TextField()
@@ -200,6 +221,7 @@ class Story(models.Model):
     total_downvotes = models.IntegerField(default=0)
     last_editor = models.ForeignKey(WikiaUser, related_name='edits', null=True)
     last_updated = models.DateTimeField()
+    hotness = models.FloatField(null=True)
 
     class Meta:
         unique_together = ('article_id', 'wiki')
@@ -207,25 +229,25 @@ class Story(models.Model):
     def __unicode__(self):
         return self.title
 
+    def update_hotness(self):
+        karma_total = self.upvotes.count() - self.downvotes.count() + (self.wiki.wam_score / 100)
+        seconds = int(time.mktime(self.last_updated.timetuple())) - 1134028003
+        sign = 0
+        order = math.log(max([abs(karma_total), 1]), 10)
+        if karma_total > 0:
+            sign = 1
+        elif karma_total < 0:
+            sign = -1
+        self.hotness = round(order + sign * seconds / 45000, 7)
+        self.hotness_updated = True
+
     def get_score(self):
         return int(self.upvotes.count() - self.downvotes.count())
 
-    @classmethod
-    def ranked(cls):
-        """
-        Returns a preconfigured queryset for a faux reddit ranking algo
-        Note that WAM score adds between 0 and 10 karma to a story
-        """
-        stories_qs = cls.objects.all()
-        stories_qs.aggregate(upvotes=Count('upvotes'), downvotes=Count('downvotes'))
-        stories_qs.extra(select={'karma_total': 'SUM(upvotes - downvotes) + (app_wiki.wam_score/10)',
-                                 'order': 'log(max(abs(karma_total), 1), 10)',
-                                 'seconds': '(EPOCH FROM last_updated) - 1134028003',
-                                 'sign': 'CASE WHEN karma_total > 0 THEN 1 WHEN karma_total < 0 THEN -1 ELSE 0 END',
-                                 'hotness': 'round(order + sign * seconds / 45000, 7)'
-                                 },
-                         order_by=['-hotness'])
-        return stories_qs
+    def save(self, *args, **kwargs):
+        if not hasattr(self, 'hotness_updated'):
+            self.update_hotness()
+        super(Story, self).save()
 
 
 class UpVote(models.Model):
@@ -242,3 +264,9 @@ class Comment(models.Model):
     text = models.TextField()
     user = models.ForeignKey(User, related_name='comments')
     parent = models.ForeignKey('self', related_name='children')
+
+
+class WikiHotness(models.Model):
+    wiki = models.OneToOneField(Wiki, related_name='hotness')
+    story = models.OneToOneField(Story, related_name='wiki_hotness')
+    hotness = models.FloatField()
