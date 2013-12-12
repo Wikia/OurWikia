@@ -108,6 +108,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 # Email
+# hey guess what this is really insecure and we should change this
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
