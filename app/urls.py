@@ -7,5 +7,5 @@ urlpatterns = patterns('',
                        url(r'w/([^/]+)/(\d+)/?', views.comments),
                        url(r'(\d+)/upvote/?', views.upvote),
                        url(r'(\d+)/downvote/?', views.downvote),
-                       url(r'^accounts/profile/?$', RedirectView.as_view(url='/', permanent=False))
+                       url(r'^accounts/profile/?$', RedirectView.as_view(url='/', permanent=False)),
                        url(r'', views.frontpage))
