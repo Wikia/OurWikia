@@ -3,8 +3,8 @@
     <div><small>Welcome back, {{ request.user}}</small></div>
     <div><button type="button" href="/accounts/logout/">Log Out</button></div>
     {% else %}
-    <button type="button" href="/accounts/login/">Login</button>
-    <button type="button" href="/accounts/register/">Signup</button>
+    <a class="btn btn-default" href="/accounts/login/">Login</a>
+    <a class="btn btn-default" href="/accounts/register/">Sign Up</a>
     <div class="modal fade" id="nagModal" tabindex="-1" role="dialog" aria-labelledby="nagModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
