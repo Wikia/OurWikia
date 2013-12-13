@@ -48,13 +48,17 @@ def upvote(request, story_id):
     except ObjectDoesNotExist:
         pass
     try:
-        request.user.upvotes.get(story_id=story_id)
+        current_upvote = request.user.upvotes.get(story_id=story_id)
+        if request.POST.get('delete'):
+            current_upvote.delete()
+            return HttpResponse(json.dumps({'message': 'Upvote deleted'}), status=200)
         return HttpResponse(json.dumps({'message': 'Already upvoted'}), status=200)
     except ObjectDoesNotExist:
-        new_upvote = models.UpVote()
-        new_upvote.story = story
-        new_upvote.user = request.user
-        new_upvote.save()
+        if not request.POST.get('delete'):
+            new_upvote = models.UpVote()
+            new_upvote.story = story
+            new_upvote.user = request.user
+            new_upvote.save()
     return HttpResponse(json.dumps({'message': 'Upvote successful'}), status=200)
 
 
@@ -73,13 +77,17 @@ def downvote(request, story_id):
     except ObjectDoesNotExist:
         pass
     try:
-        request.user.downvotes.get(story_id=story_id)
+        current_downvote = request.user.downvotes.get(story_id=story_id)
+        if request.POST.get('delete'):
+            current_downvote.delete()
+            return HttpResponse(json.dumps({'message': 'Downvote deleted'}), status=200)
         return HttpResponse(json.dumps({'message': 'Already Downvoted'}), status=200)
     except ObjectDoesNotExist:
-        new_downvote = models.DownVote()
-        new_downvote.story = story
-        new_downvote.user = request.user
-        new_downvote.save()
+        if not request.POST.get('delete'):
+            new_downvote = models.DownVote()
+            new_downvote.story = story
+            new_downvote.user = request.user
+            new_downvote.save()
     return HttpResponse(json.dumps({'message': 'Downvote successful'}), status=200)
 
 

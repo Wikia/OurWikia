@@ -1,10 +1,10 @@
-{%  load humanize %}
+{% load humanize %}
 {% for story in stories %}
     <div class="story row">
         <div class="thumbnail-wrapper col-md-1 row">
             <div class="voters col-md-4 row">
                 <div class="row">
-                    <a href="#" data-id="{{ story.id }}" class="upvote">
+                    <a href="#" data-id="{{ story.id }}" class="upvote {% if not request.user.is_authenticated %}nag{% endif %}">
                         <span class="glyphicon glyphicon-chevron-up"></span>
                     </a>
                 </div>
@@ -14,7 +14,7 @@
                     </span>
                 </div>
                 <div class="row">
-                    <a href="#" data-id="{{ story.id }}" class="downvote">
+                    <a href="#" data-id="{{ story.id }}" class="downvote {% if not request.user.is_authenticated %}nag{% endif %}">
                         <span class="glyphicon glyphicon-chevron-down"></span>
                     </a>
                 </div>
