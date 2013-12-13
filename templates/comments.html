@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %}{{ story.title }}{% endblock %}
+
+{% block header %}
+<h3>{{ story.title }}</h3>
+{% endblock %}
+
+{% block content %}
+{% if story.comments %}
+{% for comment in story.comments %}
+<b>{{ comment.user }}</b>
+<p>{{ comment.text }}</p>
+{% endfor %}
+{% endif %}
+{% endblock %}
