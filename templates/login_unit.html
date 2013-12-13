@@ -1,10 +1,10 @@
 <div id="user-stuff">
     {% if request.user.is_authenticated %}
     <div><small>Welcome back, {{ request.user}}</small></div>
-    <div><button type="button" data-toggle="modal" data-remote="/accounts/logout/">Log Out</button></div>
+    <div><button type="button" href="/accounts/logout/">Log Out</button></div>
     {% else %}
-    <button type="button" data-toggle="modal" data-remote="/accounts/login/">Login</button>
-    <button type="button" data-toggle="modal" data-remote="/accounts/register/">Signup</button>
+    <button type="button" href="/accounts/login/">Login</button>
+    <button type="button" href="/accounts/register/">Signup</button>
     <div class="modal fade" id="nagModal" tabindex="-1" role="dialog" aria-labelledby="nagModalLabel" aria-hidden="true">
          <div class="modal-dialog">
             <div class="modal-content">
