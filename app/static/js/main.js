@@ -35,10 +35,9 @@ jQuery(document).ready(function() {
             }
 
             self.toggleClass('active');
-            jQuery.post('/'+story_id+'/'+vote_type+'/', params, function() {
-                var scorespan = self.closest('.voters').find('.score-number');
-                scorespan.text(parseInt(scorespan.text())+delta);
-            });
+            jQuery.post('/'+story_id+'/'+vote_type+'/', params);                
+            var scorespan = self.closest('.voters').find('.score-number');
+            scorespan.text(parseInt(scorespan.text())+delta);
         }
         e.stopPropagation();
         return false;
