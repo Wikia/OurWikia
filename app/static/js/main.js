@@ -35,7 +35,7 @@ jQuery(document).ready(function() {
             }
 
             self.toggleClass('active');
-            jQuery.post('/'+story_id+'/'+vote_type+'/', params);                
+            jQuery.post('/'+story_id+'/'+vote_type+'/', params);
             var scorespan = self.closest('.voters').find('.score-number');
             scorespan.text(parseInt(scorespan.text())+delta);
         }
