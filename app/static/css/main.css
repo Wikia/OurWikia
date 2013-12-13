@@ -74,3 +74,16 @@ img.avatar{
     max-height: 100px;
     max-width: 260px;
 }
+
+.voters a{
+    color: #dddddd;
+    outline-width: 2px;
+}
+
+.upvote.active{
+    color: #ff6600;
+}
+
+.downvote.active{
+    color: #336699;
+}
