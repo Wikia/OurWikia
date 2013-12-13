@@ -1,0 +1,10 @@
+<!-- Comment rendering -->
+<div>
+    <b>{{ comment.user }}</b>
+    <p>{{ comment.text }}</p>
+    {% if comment.children %}
+    {% for child_comment in comment.children.all %}
+        {% include "comment_child_group.html" %}
+    {% endfor %}
+    {% endif %}
+</div>

@@ -10,9 +10,8 @@
 
 {% block content %}
 {% if story.comments %}
-{% for comment in story.comments %}
-<b>{{ comment.user }}</b>
-<p>{{ comment.text }}</p>
+{% for comment in story.get_top_level_comments %}
+{% include "comment_group.html" with comment=comment %}
 {% endfor %}
 {% endif %}
 {% endblock %}
