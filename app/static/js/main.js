@@ -1,4 +1,3 @@
-/**
 jQuery(document).ready(function() {
     var csrf = jQuery('input[name="csrfmiddlewaretoken"]').val();
     jQuery('.voters a').click(function(e) {
@@ -46,4 +45,3 @@ jQuery(document).ready(function() {
         return false;
     })
 });
-**/
