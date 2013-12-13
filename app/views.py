@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 
 def _get_votes_from_user_and_story_ids(user, story_ids):
@@ -48,6 +49,7 @@ It's a freaking hackathon, and these are vulnerable to CSRF, and I don't caaaaaa
 
 @require_POST
 @login_required
+@csrf_exempt
 def upvote(request, story_id):
     try:
         story = models.Story.objects.get(id=story_id)
@@ -75,6 +77,7 @@ def upvote(request, story_id):
 
 @require_POST
 @login_required
+@csrf_exempt
 def downvote(request, story_id):
     try:
         story = models.Story.objects.get(id=story_id)

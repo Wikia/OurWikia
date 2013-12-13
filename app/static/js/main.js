@@ -1,5 +1,4 @@
 jQuery(document).ready(function() {
-    var csrf = jQuery('input[name="csrfmiddlewaretoken"]').val();
     jQuery('.voters a').click(function(e) {
         var self = $(this);
 
@@ -9,7 +8,7 @@ jQuery(document).ready(function() {
 
         } else {
             var story_id = $(this).data('id');
-            var params = {'csrfmiddlewaretoken': csrf};
+            var params = {};
             var vote_type = 'upvote';
             var delta = 0;
             if (self.hasClass('downvote')) {
