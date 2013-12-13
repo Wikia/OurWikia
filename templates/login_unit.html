@@ -1,9 +1,9 @@
 <div id="user-stuff">
     {% if request.user.is_authenticated %}
     <div><small>Welcome back, {{ request.user}}</small></div>
-    <div><button type="button" href="/accounts/logout/">Log Out</button></div>
+    <div><a class="btn btn-default" href="/accounts/logout/">Log Out</a></div>
     {% else %}
-    <div id="login-buttons class="btn-group">
+    <div id="login-buttons" class="btn-group">
         <a class="btn btn-default" href="/accounts/login/">Login</a>
         <a class="btn btn-default" href="/accounts/register/">Sign Up</a>
     </div>
