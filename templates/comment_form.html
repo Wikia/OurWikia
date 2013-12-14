@@ -1,0 +1,8 @@
+{%  if request.user.is_authenticated %}
+    <form method="POST">
+        {% csrf_token %}
+        <label for="text">Add a comment</label>
+        <textarea name="text" data-story-id="{{ story.id }}" class="comment-text"></textarea>
+        <button type="submit" class="pull-right btn-primary btn-lg">Submit</button>
+    </form>
+{% endif %}

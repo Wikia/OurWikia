@@ -5,13 +5,84 @@
 {% block title %}{{ story.title }}{% endblock %}
 
 {% block header %}
-<h3>{{ story.title }}</h3>
+    <div class="container initial-container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="logo-wrapper">
+                    <img src="{{ story.wiki.wordmark }}" alt="" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="header-col">
+                    <h1>{{ story.wiki.title }}</h1>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="logo-wrapper">
+                    <a href="/">
+                        <img src="{% static "img/our_wikia.png" %}" alt="" id="our-wikia-logo-sw"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h2>{{ story.title }} &mdash; <small>({{ story.upvotes.count }} upvotes, {{ story.downvotes.count }} downvotes)</small></h2>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}
-{% if story.comments %}
-{% for comment in story.get_top_level_comments %}
-{% include "comment_group.html" with comment=comment %}
-{% endfor %}
-{% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="row">
+                    {% if not request.user.is_authenticated %}
+                        Please login or signup to comment.
+                    {% endif %}
+                    {% include "comment_form.html" %}
+                </div>
+                {% if story.comments %}
+                    <h3>Comments</h3>
+                    {% for comment in story.get_top_level_comments %}
+                        {% include "comment_group.html" with comment=comment %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+           <div class="col-md-2">
+            {% include "login_unit.html" %}
+            {%  if wiki.headline %}
+            <h3>{{ wiki.headline }}</h3>
+            {% endif %}
+            <p class="description">{{ wiki.desc }}</p>
+            <h4>{{ wiki.title }} Stats</h4>
+            <ul class="list-group">
+                {% if wiki.edits %}
+                <li class="list-group-item">{{ wiki.edits }} edits</li>
+                {% endif %}
+                {% if wiki.articles %}
+                <li class="list-group-item">{{ wiki.articles }} articles</li>
+                {% endif %}
+                {% if wiki.pages%}
+                <li class="list-group-item">{{ wiki.pages }} pages</li>
+                {% endif %}
+                {% if wiki.edits %}
+                <li class="list-group-item">{{ wiki.users}} users</li>
+                {% endif %}
+                {% if wiki.active_users %}
+                <li class="list-group-item">{{ wiki.active_users }} active users</li>
+                {% endif %}
+            </ul>
+            {% if wiki.top_users.count %}
+            <h4>Top Users</h4>
+            <ul class="list-group">
+            {% for user in wiki.get_top_users %}
+                <li class="list-group-item"><a href="{{ user.url }}">
+                    <img src="{{ user.avatar }}" class="avatar" alt=""/> {{ user.name }}
+                </a></li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

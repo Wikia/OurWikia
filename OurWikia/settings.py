@@ -46,7 +46,8 @@ INSTALLED_APPS = (
     'south',
     'sekizai',
     'django_extensions',
-    'redis_cache'
+    'redis_cache',
+    'django_markdown'
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
