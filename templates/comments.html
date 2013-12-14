@@ -25,6 +25,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <h2>{{ story.title }} &mdash; <small>({{ story.upvotes.count }} upvotes, {{ story.downvotes.count }} downvotes)</small></h2>
         </div>
@@ -35,6 +36,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10">
+                {% include "story_row.html" %}
                 <div class="row">
                     {% if not request.user.is_authenticated %}
                         Please login or signup to comment.

@@ -1,0 +1,61 @@
+{% load humanize %}
+<div class="story row">
+    <div class="thumbnail-wrapper col-md-1 row">
+        <div class="voters col-md-4 row">
+            <div class="row">
+                <a href="#" data-id="{{ story.id }}" class="upvote {% if not request.user.is_authenticated %}nag{% elif story.id in curr_upvotes %}active{% endif %}">
+                    <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </div>
+            <div class="row score">
+                <span class="score-number">
+                    {{ story.get_score }}
+                </span>
+            </div>
+            <div class="row">
+                <a href="#" data-id="{{ story.id }}" class="downvote {% if not request.user.is_authenticated %}nag{% elif story.id in curr_downvotes %}active{% endif %}">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% if story.thumbnail %}
+    <div class="thumbnail-wrapper col-md-2">
+        <div class="ow-fixed-thumbnail col-md-8">
+            <a href="{{ story.url }}" >
+                <img class="story-thumbnail img-rounded" src="{{ story.thumbnail }}" alt=""/>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    <div class="headline row {% if story.thumbnail %}col-md-9{% else %}col-md-11{% endif %}">
+        <a href="{{ story.url }}">{{ story.title }} -- {{ story.abstract }}</a>
+        <div class="metadata row">
+            <div class="col-md-8 pull-left">
+                <small><i>
+                    Last updated {{ story.last_updated|naturaltime }}
+                    {% if story.last_editor %}
+                    <span class="edited-by">by <img class="avatar" src="{{ story.last_editor.avatar }}" alt="" />
+                        <a href="{{ story.last_editor.url }}">{{ story.last_editor.name }}</a>
+                    </span>
+                    {% endif %}
+                    {% if not wiki %}
+                    on <a href="{% url 'app.views.subwikia' story.wiki.subdomain %}">{{ story.wiki.title}}</a>
+                    {% endif %}
+                </i></small>
+            </div>
+            <div class="col-md-4 pull-right comments-line">
+                <small>
+                    <a href="{% url 'app.views.comments' story.wiki.subdomain story.id %}">
+                    <!-- route for comments -->
+                        {% if story.comments %}
+                        {{ story.comments.count }} comments
+                        {% else %}
+                        0 comments
+                        {% endif %}
+                    </a>
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
