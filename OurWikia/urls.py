@@ -11,5 +11,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     (r'^accounts/', include('registration.backends.default.urls')),
+    url('^markdown/', include( 'django_markdown.urls')),
     (r'', include(app_urls)),
 )

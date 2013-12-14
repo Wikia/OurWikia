@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from forms import CommentForm
 
 
 def _get_votes_from_user_and_story_ids(user, story_ids):
@@ -39,8 +40,31 @@ def subwikia(request, subdomain):
                               context_instance=RequestContext(request))
 
 
-def comments(request, subdomain, story_id):
-    pass
+def comments(request, subdomain, article_id):
+    try:
+        wiki = models.Wiki.objects.get(subdomain=subdomain)
+        story = models.Story.objects.get(id=article_id, wiki=wiki)
+    except ObjectDoesNotExist:
+        return four_oh_four(request)
+    if request.method == "POST" and request.user.is_authenticated():
+        text = request.POST.get('text')
+        if text is not None and text.strip() is not "":
+            parent_id = request.POST.get('parent_id')
+            if parent_id is not None:
+                try:
+                    parent = models.Comment(id=parent_id, story=story)
+                    new_comment = models.Comment(story=story, parent=parent, text=text, user=request.user)
+                    new_comment.save()
+                except ObjectDoesNotExist:
+                    pass
+            else:
+                new_comment = models.Comment(story=story, text=text, user=request.user)
+                new_comment.save()
+
+    current_comments = [c for c in models.Comment.objects.filter(id=article_id)]
+    return render_to_response('comments.html',
+                              dict(story=story, comments=current_comments, wiki=wiki, comment_form=CommentForm()),
+                              context_instance=RequestContext(request))
 
 
 """

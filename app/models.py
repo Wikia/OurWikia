@@ -229,6 +229,9 @@ class Story(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_top_level_comments(self):
+        return self.comments.filter(parent__isnull=True)
+
     def update_hotness(self):
         karma_total = self.upvotes.count() - self.downvotes.count() + (self.wiki.wam_score / 100)
         seconds = int(time.mktime(self.last_updated.timetuple())) - 1134028003
@@ -261,9 +264,10 @@ class DownVote(models.Model):
 
 
 class Comment(models.Model):
+    story = models.ForeignKey(Story, related_name='comments')
     text = models.TextField()
     user = models.ForeignKey(User, related_name='comments')
-    parent = models.ForeignKey('self', related_name='children')
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
 
 
 class WikiHotness(models.Model):
