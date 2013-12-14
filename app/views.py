@@ -39,8 +39,14 @@ def subwikia(request, subdomain):
                               context_instance=RequestContext(request))
 
 
-def comments(request, subdomain, story_id):
-    pass
+def comments(request, subdomain, article_id):
+    try:
+        story = models.Story.objects.get(id=article_id)
+    except ObjectDoesNotExist:
+        return four_oh_four(request)
+    # look at request, inspect for post data, use it to instantiate comment and supply with data it needs to save correctly
+    comments = [c for c in models.Comment.objects.filter(id=article_id)]
+    return render_to_response('comments.html', dict(story=story, context_instance=RequestContext(request)))
 
 
 """

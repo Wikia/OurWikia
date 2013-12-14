@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block title %}{{ story.title }}{% endblock %}
+
+{% block header %}
+<h3>{{ story.title }}</h3>
+{% endblock %}
+
+{% block content %}
+{% if story.comments %}
+{% for comment in story.get_top_level_comments %}
+{% include "comment_group.html" with comment=comment %}
+{% endfor %}
+{% endif %}
+{% endblock %}
